@@ -1,48 +1,84 @@
 package hu.helixlab;
 
-import hu.helixlab.model.User;
-
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
+import hu.helixlab.domain.User;
+import hu.helixlab.service.UserService;
 
 public class Main {
-	// Create an EntityManagerFactory when you start the application.
-	private static final EntityManagerFactory ENTITY_MANAGER_FACTORY = Persistence
-			.createEntityManagerFactory("helixlab_jpa_pu");
-
 
 	public static void main(String[] args) {
+		UserService userService = new UserService();
 
-		EntityManager manager = ENTITY_MANAGER_FACTORY.createEntityManager();
-		EntityTransaction transaction = null;
+		for(int i = 0; i < 10; ++i){
+			User user = new User();
+			user.setEmail("example" + i + "@gmail.com");
 
-		try {
-			// Get a transaction
-			transaction = manager.getTransaction();
-			// Begin the transaction
-			transaction.begin();
-
-			// Create xy object
-			User u = new User();
-
-			// Save the xy object
-			manager.persist(u);
-
-			// Commit the transaction
-			transaction.commit();
-		} catch (Exception ex) {
-			// If there are any exceptions, roll back the changes
-			if (transaction != null) {
-				transaction.rollback();
-			}
-			// Print the Exception
-			ex.printStackTrace();
-		} finally {
-			// Close the EntityManager
-			manager.close();
+			userService.save(user);
 		}
 
+		for(User u : userService.findAll()){
+			System.out.println(u.toString());
+		}
+
+		User user = userService.findById(2);
 	}
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//	List<User> users = manager.createQuery("SELECT u FROM User u", User.class).getResultList();
+//			for(User us : users){
+//					System.out.println(us);
+//					}
+//
+
+//	// Create User object
+//	User u = new User();
+//			u.setEmail("sadas@gmail.com");
+//					u.setUsername("béla");
+//
+//					Role r = new Role();
+//					r.setRoleName("admin");
+//					manager.persist(r);
+//					u.addRole(r);
+//
+//					SalaryInformation si = new SalaryInformation();
+//					si.setBaseSalary(100000);
+//					si.setNote("Tfdvvxvc");
+//					manager.persist(si);
+//					u.setSalaryInformation(si);
+//
+//					Note n1 = new Note();
+//					n1.setNoteTtext("dsfddsf1");
+//					manager.persist(n1);
+//
+//					Note n2 = new Note();
+//					n2.setNoteTtext("dsfddsf2");
+//					manager.persist(n2);
+//
+//					u.addNote(n1);
+//					u.addNote(n2);
+//
+//					// Save the xy object
+//					manager.persist(u);
