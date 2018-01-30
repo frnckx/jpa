@@ -19,8 +19,14 @@ public class User implements Serializable{
 	@OneToOne
 	private Note note;
 
+	//https://stackoverflow.com/questions/2990799/difference-between-fetchtype-lazy-and-eager-in-java-persistence-api
 	@OneToMany(fetch = FetchType.EAGER)
 	private Set<Contact> contacts = new HashSet<>();
+
+	//https://stackoverflow.com/questions/2990799/difference-between-fetchtype-lazy-and-eager-in-java-persistence-api
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "user_group", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "group_id"))
+	private Set<Group> groups = new HashSet<>();
 
 	public Integer getId() {
 		return id;
@@ -59,13 +65,21 @@ public class User implements Serializable{
 		this.contacts.add(c);
 	}
 
-	@Override
-	public String toString() {
+	public Set<Group> getGroups() {
+		return groups;
+	}
+
+	public void setGroups(Set<Group> groups) {
+		this.groups = groups;
+	}
+
+	@Override public String toString() {
 		return "User{" +
 				"id=" + id +
 				", email='" + email + '\'' +
 				", note=" + note +
-				", contact=" + contacts +
+				", contacts=" + contacts +
+				", groups=" + groups +
 				'}';
 	}
 }
