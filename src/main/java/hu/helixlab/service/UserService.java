@@ -24,7 +24,7 @@ public class UserService {
 
 			//TODO külön contact service-be kell rakni
 			Contact c = new Contact();
-			c.setContactDescription("contact");
+			c.setContactDescription("example contact");
 			manager.persist(c);
 			user.addContact(c);
 			//////////////////////////////////////////////
