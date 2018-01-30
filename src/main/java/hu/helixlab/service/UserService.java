@@ -1,11 +1,9 @@
 package hu.helixlab.service;
 
+import hu.helixlab.domain.Contact;
 import hu.helixlab.domain.User;
 
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
-import javax.persistence.Persistence;
+import javax.persistence.*;
 import java.util.List;
 
 public class UserService {
@@ -23,6 +21,13 @@ public class UserService {
 			transaction = manager.getTransaction();
 			// Begin the transaction
 			transaction.begin();
+
+			//TODO külön contact service-be kell rakni
+			Contact c = new Contact();
+			c.setContactDescription("contact");
+			manager.persist(c);
+			user.addContact(c);
+			//////////////////////////////////////////////
 
 			manager.persist(user);
 
@@ -56,8 +61,8 @@ public class UserService {
 			transaction.begin();
 
 			//JPQL
-			users = manager.createQuery("select u from User u ").getResultList();
-
+			//users = manager.createQuery("select u from User u ").getResultList();
+			users = manager.createNamedQuery("getAllUser").getResultList();
 			// Commit the transaction
 			transaction.commit();
 
@@ -89,7 +94,72 @@ public class UserService {
 			transaction.begin();
 
 			//JPQL
-			user = (User) manager.createQuery("select u from User u where u.id =" +id).getResultList();
+			/*user = (User) manager.
+					createQuery("select u from User u where u.id =" + id).getResultList();
+
+			*/
+			Query query = manager.createQuery("select u from User u where u.id = :id");
+			query.setParameter("id", id);
+
+			user = (User) query.getSingleResult();
+
+			transaction.commit();
+
+		} catch (Exception ex) {
+			// If there are any exceptions, roll back the changes
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			// Print the Exception
+			ex.printStackTrace();
+		} finally {
+			// Close the EntityManager
+			manager.close();
+		}
+
+		return user;
+	}
+
+	public void delete(User user){
+		EntityManager manager = ENTITY_MANAGER_FACTORY.createEntityManager();
+		EntityTransaction transaction = null;
+
+		try {
+			// Get a transaction
+			transaction = manager.getTransaction();
+			// Begin the transaction
+			transaction.begin();
+
+			manager.remove(user);
+
+			// Commit the transaction
+			transaction.commit();
+
+		} catch (Exception ex) {
+			// If there are any exceptions, roll back the changes
+			if (transaction != null) {
+				transaction.rollback();
+			}
+			// Print the Exception
+			ex.printStackTrace();
+		} finally {
+			// Close the EntityManager
+			manager.close();
+		}
+	}
+
+	public User update(User user){
+		EntityManager manager = ENTITY_MANAGER_FACTORY.createEntityManager();
+		EntityTransaction transaction = null;
+
+		try {
+			// Get a transaction
+			transaction = manager.getTransaction();
+			// Begin the transaction
+			transaction.begin();
+
+			manager.persist(user);
+
 			// Commit the transaction
 			transaction.commit();
 
@@ -107,4 +177,17 @@ public class UserService {
 
 		return user;
 	}
+
+
+
+
+
+
+	/*public List<User> findAllWhereIdBiggerThen(int id){
+		//TODO
+	}
+
+	public void deleteById(){
+		//TODO
+	}*/
 }
