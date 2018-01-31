@@ -11,6 +11,11 @@ import java.util.Set;
 
 public class Main {
 
+	/**
+	 * https://vladmihalcea.com/a-beginners-guide-to-jpa-and-hibernate-cascade-types/
+	 * Tutorial jpa-hoz, érdemes végigcsinálni
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		UserService userService = new UserService();
 		NoteService noteService = new NoteService();
